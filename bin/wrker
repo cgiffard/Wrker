@@ -1,0 +1,99 @@
+#!/usr/bin/env node
+
+/*
+ __      __   _
+ \ \    / / _| |_____ _ _
+  \ \/\/ / '_| / / -_) '_|
+   \_/\_/|_| |_\_\___|_|
+ ────────────────────────────────┐
+                                 │
+          ▫                   ▫  │
+    ▫   ▫▫▫ ▫           ▫    ▫▫  │
+  ▫ ▫▫  ▫▫▫▫▫▫▫         ▫▫  ▫▫▫  │
+  ▫▫▫▫▫▫▫▫▫▫▫▫▫▫  ▫   ▫▫▫▫▫ ▫▫▫  │ Microbenchmark suite
+  ▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫  └──────────────────────────
+*/
+
+
+var fs          = require("fs"),
+    programme   = require("commander"),
+    colors      = require("colors"),
+    package     = require("../package.json");
+    wrker       = require("../"),
+    logo        = fs.readFileSync(__filename, "utf8");
+
+var reporterDisplayIndent = "\n\t\t\t\t\t\t\t* ";
+
+console.error(
+    logo.split(/\n+/).slice(2, 6).join("\n").cyan + "\n" +
+    logo.split(/\n+/).slice(6, 13).join("\n").cyan.dim + "\n");
+
+programme
+    .version(package.version)
+    .usage("[options] <url...>")
+    .option("-v --verbose", "Verbose mode")
+    .option("-i --iterations <number>",
+            "The number of test iterations/increments to run (default 10)", parseFloat, 10)
+    .option("-d --duration <number>",
+            "The duration in seconds for each test (default 5)", parseFloat, 5)
+    .option("-a --averageOf <number>",
+            "The number of repeat tests to run at each stepping interval (default 3)", parseFloat, 3)
+    .option("-s --stepBy <number>",
+            "The number of concurrent connections to step up by each iteration (default 10)", parseFloat, 10)
+    .option("-r --reporter <value>",
+            "The reporter to use (defaults to console.) " +
+            "Use one of: " + reporterDisplayIndent +
+            Object.keys(wrker.outputs).join(reporterDisplayIndent), "console")
+    .parse(process.argv);
+
+// Generic sink for usage errors
+programme.on("error", function(err) {
+    if (!err) {
+        console.error("\nAn unknown error was emitted.".red);
+        console.log(programme.helpInformation());
+        return process.exit(1);
+    }
+
+    console.error("\n" + String(err.message).red);
+    if (programme.verbose) {
+        console.error(String(err.stack).red.dim);
+    }
+
+    console.log(programme.helpInformation());
+    return process.exit(1);
+});
+
+// Grab the URLs
+var urls = programme.args;
+
+if (!urls.length)
+    programme.emit("error",
+        new Error("You must supply at least one URL to test."));
+
+if (!wrker.outputs[programme.reporter])
+    programme.emit("error",
+        new Error(
+            "Sorry, I don't know about the reporter '" +
+                programme.reporter + "'."));
+
+try {
+    var test =
+        wrker(
+            urls,
+            programme.iterations,
+            programme.duration,
+            programme.averageOf,
+            programme.stepBy
+        );
+
+    // Attach output...
+    wrker.outputs[programme.reporter](test, programme);
+
+    // The browser should control the test, but other outputs
+    // are OK to just kick off.
+    if (programme.reporter !== "browser")
+        test.start();
+
+} catch (err) {
+    programme.emit("error", err);
+}

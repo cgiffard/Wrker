@@ -1,0 +1,21 @@
+html
+    head
+        title Wrker Live View
+        // meta(http-equiv="refresh", content="20")
+        style
+            include events.css
+        script
+            include ../../node_modules/d3/d3.min.js
+        script
+            include events.js
+    body
+        header
+            h1 Wrker
+            h2.status Not running
+        main
+            section
+                h1 Latency
+                graph.latency
+            section
+                h1 Requests
+                graph.tps

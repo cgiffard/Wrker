@@ -1,0 +1,112 @@
+* {
+	box-sizing: border-box;
+	padding: 0px;
+	margin: 0px;
+}
+
+body {
+	background-color: #333;
+	color: #AAA;
+}
+
+body {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	margin-top: 6rem;
+}
+
+header {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 5rem;
+	padding-left: 0px;
+	z-index: 100;
+
+	background-color: inherit;
+
+	box-shadow:	#333 0px 10px 10px,
+				inset rgba(0, 0, 0, 0.5) 0px -1px 3px;
+	border-bottom: solid rgba(255,255,255,0.2) 1px;
+
+	background-image: -webkit-gradient(linear, left center, right center, from(rgba(105, 9, 15, 0.00)), to(rgba(101, 18, 17, 0.49)));
+	background-image: -webkit-linear-gradient(left, rgba(105, 9, 15, 0.00), rgba(101, 18, 17, 0.49));
+	background-image: -moz-linear-gradient(left, rgba(105, 9, 15, 0.00), rgba(101, 18, 17, 0.49));
+	background-image: -ms-linear-gradient(left, rgba(105, 9, 15, 0.00), rgba(101, 18, 17, 0.49));
+	background-image: linear-gradient(left, rgba(105, 9, 15, 0.00), rgba(101, 18, 17, 0.49));
+
+	background-size: 33% 100%;
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+
+header h1 {
+	font-weight: 100;
+	font-size: 3rem;
+	line-height: 5rem;
+	padding: 0px;
+	margin: 0px;
+	padding-left: 1vw;
+	border-left: solid 4px goldenrod;
+	width: 50%;
+	float: left;
+	text-shadow: rgba(0, 0, 0, 0.5) -1px -1px 1px;
+}
+
+header h2 {
+	float: right;
+	line-height: 5rem;
+	padding-right: 1vw;
+	font-weight: 200;
+	text-transform: uppercase;
+	font-size: 1rem;
+	text-shadow:	rgba(0, 0, 0, 0.5) -1px -1px 0px,
+				rgba(255, 0, 0, 1) 0px 0px 20px;
+}
+
+.ok header {
+	background-image: -webkit-gradient(linear, left center, right center, from(rgba(9, 104, 34, 0.00)), to(rgba(18, 102, 40, 0.49)));
+	background-image: -webkit-linear-gradient(left, rgba(9, 104, 34, 0.00), rgba(18, 102, 40, 0.49));
+	background-image: -moz-linear-gradient(left, rgba(9, 104, 34, 0.00), rgba(18, 102, 40, 0.49));
+	background-image: -ms-linear-gradient(left, rgba(9, 104, 34, 0.00), rgba(18, 102, 40, 0.49));
+	background-image: linear-gradient(left, rgba(9, 104, 34, 0.00), rgba(18, 102, 40, 0.49));
+}
+
+.ok header h2 {
+	text-shadow:	rgba(0, 0, 0, 0.5) -1px -1px 0px,
+				rgba(0, 255, 0, 1) 0px 0px 20px;
+}
+
+section {
+	margin: 1vw;
+	border: solid rgba(255,255,255,0.15) 1px;
+	box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 4px;
+}
+
+section h1 {
+	border-left: solid 4px #CCC;
+	padding-left: 1vw;
+	font-weight: 100;
+	font-size: 1.3rem;
+	line-height: 3rem;
+	color: #999;
+}
+
+section graph {
+	display: block;
+	position: relative;
+	border: solid rgba(255, 255, 255, 0.1) 1px;
+	height: 34vh;
+	margin: 1vw;
+	box-shadow: inset rgba(0, 0, 0, 0.5) 0px -1px 3px;
+}
+
+graph p {
+	padding: 0rem;
+	background-color: goldenrod;
+	display: block;
+	color: black;
+	float: left;
+	width: 0.25%;
+}
