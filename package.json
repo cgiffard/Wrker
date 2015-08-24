@@ -6,6 +6,9 @@
   "scripts": {
     "test": "npm test"
   },
+  "bin": {
+    "wrker": "./bin/wrker"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/cgiffard/wrker.git"
