@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/cgiffard/wrker#readme",
   "dependencies": {
+    "colors": "^1.1.2",
     "commander": "^2.8.1",
     "d3": "^3.5.6",
     "gnuplot": "^0.2.0",

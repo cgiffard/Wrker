@@ -6,7 +6,6 @@ module.exports = function(test, programme) {
     var http    = require("http"),
         jade    = require("jade"),
         path    = require("path"),
-        fs      = require("fs"),
         server  = http.createServer(serverInitHandler)
                         .listen(2501, nowListening);
 
