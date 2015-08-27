@@ -63,6 +63,7 @@ header h2 {
 	font-size: 1rem;
 	text-shadow:	rgba(0, 0, 0, 0.5) -1px -1px 0px,
 				rgba(255, 0, 0, 1) 0px 0px 20px;
+	cursor: pointer;
 }
 
 .ok header {
@@ -80,6 +81,8 @@ header h2 {
 
 section {
 	margin: 1vw;
+	width: 48vw;
+	float: left;
 	border: solid rgba(255,255,255,0.15) 1px;
 	box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 4px;
 }
@@ -102,11 +105,6 @@ section graph {
 	box-shadow: inset rgba(0, 0, 0, 0.5) 0px -1px 3px;
 }
 
-graph p {
-	padding: 0rem;
-	background-color: goldenrod;
-	display: block;
-	color: black;
-	float: left;
-	width: 0.25%;
+graph rect {
+	fill: rgba(218, 164, 64, 0.7);
 }

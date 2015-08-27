@@ -1,17 +1,47 @@
-function createGraph(selector, data) {
-    var container = document.querySelector(selector);
+function createGraphContainer(title, data, value) {
+    var container = document.createElement("section"),
+        heading   = document.createElement("h1"),
+        graph     = document.createElement("graph");
+
+    heading.innerText = title;
+    container.appendChild(heading);
+    container.appendChild(graph);
+    document.querySelector("main").appendChild(container);
+
+    // The single value parameter is temporary — will eventually replace with
+    // multiple mappings per graph
+    return createGraph(graph, data, value);
+}
+
+function createGraph(selector, data, value) {
+    var container = typeof selector === "object" ?
+                           selector : document.querySelector(selector);
 
     if (!container)
         throw new Error("Graph container couldn't be matched.");
 
-    var width           = container.clientWidth,
-        height          = container.clientHeight,
-        graphSVG        = document.createElement("svg");
-        graphSVG.width  = width,
-        graphSVG.height = height;
+    var width  = container.clientWidth,
+        height = container.clientHeight;
 
-    document.appendChild(svg);
+    window.addEventListener("resize", function() {
+        width  = container.clientWidth;
+        height = container.clientHeight;
+        updateGraph();
+    });
 
+    var graphSVG =
+        d3.select(container)
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style("width", "100%")
+            .style("height", "100%");
+
+    // Unwrap d3 array into DOM node
+    while (graphSVG instanceof Array)
+        graphSVG = graphSVG[0];
+
+    // Todo: make this useful
     var mappings = {
         "score": null,
         "average": null,
@@ -22,6 +52,53 @@ function createGraph(selector, data) {
         "stdDev": null
     };
 
+    function updateGraph() {
+        d3.select(graphSVG)
+            .attr("width", width)
+            .attr("height", height);
+
+        var graphData = data.map(function(sample) {
+            return sample[value];
+        });
+
+        var dataMax = d3.max(graphData);
+
+        var yScale =
+            d3.scale.linear()
+                .domain([0, dataMax])
+                .range([0, height]);
+
+        var xScale =
+            d3.scale.linear()
+                .domain([0, graphData.length])
+                .range([0, width]);
+
+        [].slice.call(graphSVG.querySelectorAll("rect")).forEach(function(rect) {
+            graphSVG.removeChild(rect);
+        });
+
+        var graphNodes =
+            d3.select(graphSVG)
+                .selectAll("rect")
+                .data(graphData);
+
+        graphNodes
+            .enter()
+            .append("rect")
+                .attr("width", function(d, i) {
+                    var barWidth = (width / graphData.length) | 0;
+                    return (barWidth > 1 ? barWidth - 1 : barWidth) || 1;
+                })
+                .attr("height", function(d)    { return yScale(d);               })
+                .attr("x",      function(d, i) { return xScale(i);               })
+                .attr("y",      function(d, i) { return height - yScale(d);      })
+                .attr("fill",   "green");
+
+        graphNodes.exit().remove();
+
+        return self;
+    }
+
     var self = {
         map: function(input, output) {
             mappings[input] = String(output);
@@ -31,85 +108,8 @@ function createGraph(selector, data) {
             data = newData;
             return self.updateGraph();
         },
-        updateGraph: updateGraph.bind(self, graphSVG, mappings, data)
-    }
+        update: updateGraph
+    };
 
     return self;
 }
-
-function updateGraph() {
-    // console.log("Updating graph...");
-
-    var maxReqSec = d3.max(testData, function(sample) {
-        return sample.requestsSec;
-    });
-
-    var yScale =
-        d3.scale.linear()
-            .domain([0, maxReqSec])
-            .range([0, 100]);
-
-    var xScale =
-        d3.scale.linear()
-            .domain([0, testData.length])
-            .range([0, 100]);
-
-    [].slice.call(document.querySelectorAll("p")).forEach(function(p) {
-        p.parentNode.removeChild(p);
-    })
-
-    var tpsNodes =
-        d3.select("graph.tps")
-            .selectAll("p")
-            .data(testData);
-
-    tpsNodes.enter()
-            .append("p")
-            .style("height", function(d) { return yScale(d.requestsSec) + "%" })
-            .style("width", function(d, i) { return (100 / testData.length) + "%";})
-            .style("left", function(d, i) { return xScale(i) + "%"; })
-            .style("bottom", "0px")
-            .style("position", "absolute");
-
-    tpsNodes.exit().remove();
-
-    var maxLatency = d3.max(testData, function(sample) {
-        return sample.threadLatencyAvg;
-    });
-
-    var yScale =
-        d3.scale.linear()
-            .domain([0, maxLatency])
-            .range([0, 100]);
-
-    var xScale =
-        d3.scale.linear()
-            .domain([0, testData.length])
-            .range([0, 100]);
-
-    var latencyNodes =
-        d3.select("graph.latency")
-            .selectAll("p")
-            .data(testData);
-
-    latencyNodes.enter()
-            .append("p")
-            .style("height", function(d) { return yScale(d.threadLatencyAvg) + "%" })
-            .style("width", function(d, i) { return (100 / testData.length) + "%";})
-            .style("left", function(d, i) { return xScale(i) + "%"; })
-            .style("bottom", "0px")
-            .style("position", "absolute");
-
-    latencyNodes.exit().remove();
-}
-
-// To make not rubbish
-window.setTimeout(function() {
-    // document.querySelector("header h2").addEventListener("click", function(e) {
-    //     console.log("Kicking off test...");
-    //     var f = new Image();
-    //     f.src = "/start-test";
-    // }, false);
-
-    updateGraph();
-}, 250);
