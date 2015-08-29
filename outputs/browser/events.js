@@ -1,7 +1,7 @@
 var evtSourceStreamURL  = window.location.href + "event-source",
     source              = new EventSource(evtSourceStreamURL);
 
-var testData = [];
+var testData = JSON.parse(localStorage.testData || "[]") || [];
 
 function decamelise(string) {
     return (
@@ -42,7 +42,10 @@ window.addEventListener("load", function(e) {
             "transferSec"
         ]
         .map(function(value) {
-            return createGraphContainer(decamelise(value), testData, value);
+            return { name: value, title: decamelise(value) };
+        })
+        .map(function(graph, index, graphArray) {
+            return createGraphContainer(graph.title, testData, graph.name, graphArray);
         });
 
     graphs.forEach(function(graph) {
@@ -91,7 +94,7 @@ source.addEventListener("testcomplete", function(evt) {
     updateStatus("Test complete (" + eventData[1].requestsSec + " req/s)")
     testData.push(eventData[1]);
     graphs.forEach(function(graph) {
-        graph.update();
+        graph.data(testData).update();
     });
 });
 

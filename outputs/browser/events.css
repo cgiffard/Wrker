@@ -85,23 +85,56 @@ section {
 	float: left;
 	border: solid rgba(255,255,255,0.15) 1px;
 	box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 4px;
+	overflow: hidden;
 }
 
 section h1 {
-	border-left: solid 4px #CCC;
 	padding-left: 1vw;
 	font-weight: 100;
 	font-size: 1.3rem;
 	line-height: 3rem;
 	color: #999;
+	padding-bottom: 0px;
+	float: left;
+}
+
+section span.mashwith {
+	float: right;
+	line-height: 3rem;
+	padding-right: 1vw;
+	text-transform: uppercase;
+	color: #666;
+	opacity: 0.4;
+}
+
+section:hover span.mashwith {
+	opacity: 1;
+}
+
+select {
+	-webkit-appearance: none;
+	background-color: transparent;
+	border: solid rgba(255,255,255,0.4) 1px;
+	box-shadow: inset rgba(0,0,0,0.1) 0px -2px 1px, rgba(255,255,255,0.1) 0px 0px 5px;
+	color: #AAA;
+	line-height: 1.7rem;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	outline: none;
+}
+
+select:focus {
+	box-shadow: inset rgba(0,0,0,0.1) 0px -2px 1px, rgba(255,255,255,0.5) 0px 0px 5px;
 }
 
 section graph {
+	clear: both;
 	display: block;
 	position: relative;
 	border: solid rgba(255, 255, 255, 0.1) 1px;
 	height: 34vh;
 	margin: 1vw;
+	margin-top: 0px;
 	box-shadow: inset rgba(0, 0, 0, 0.5) 0px -1px 3px;
 }
 
