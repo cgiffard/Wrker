@@ -3,6 +3,8 @@
 Wrapper around `wrk` for easier testing. Runs multiple times at different
 connection counts, averages multiple tests, graphs results, and more.
 
+![Image of wrk doing its thing in the browser...](https://files.app.net/7t9h2OeFd.png)
+
 ## Installation
 
 Wrker uses node. You'll need to install `wrk` and `node` before installing wrk:
