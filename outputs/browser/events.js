@@ -96,6 +96,8 @@ source.addEventListener("testcomplete", function(evt) {
     graphs.forEach(function(graph) {
         graph.data(testData).update();
     });
+
+    localStorage.testData = JSON.stringify(testData);
 });
 
 source.addEventListener("suitecomplete", function(evt) {

@@ -32,13 +32,13 @@ function createGraphContainer(title, data, value, graphs) {
 
     // The single value parameter is temporary — will eventually replace with
     // multiple mappings per graph
-    var graph = createGraph(graph, data, value);
+    var graphObject = createGraph(graph, data, value);
 
     select.addEventListener("change", function(evt) {
-        graph.setComparisonMetric(select.value || null);
+        graphObject.setComparisonMetric(select.value || null);
     });
 
-    return graph;
+    return graphObject;
 }
 
 function createGraph(selector, data, value) {
@@ -81,11 +81,24 @@ function createGraph(selector, data, value) {
         "stdDev": null
     };
 
-    function updateGraph() {
-        d3.select(graphSVG)
-            .attr("width", width)
-            .attr("height", height);
+    var chart =
+        nv.models.scatterChart()
+            .duration(1000)
+            .width(width)
+            .height(height)
+            .showDistX(true)
+            .showDistY(true)
+            .showLegend(false)
+            .margin({
+                top: 30, left: 100, right: 30, bottom: 50
+            });
 
+    chart.xAxis.ticks(20);
+    chart.yAxis.ticks(6);
+
+    function updateGraph() {
+
+        // Process data
         var graphData =
             data.map(function(sample) {
                 return sample[value];
@@ -98,58 +111,33 @@ function createGraph(selector, data, value) {
         var dataMax            = d3.max(graphData),
             secondaryMetricMax = d3.max(secondryMetricData);
 
-        var xScale,
-            yScale =
-                d3.scale.linear()
-                    .domain([0, dataMax])
-                    .range([0, height]);
+        var axisValues =
+            data.map(function(sample, index) {
+                return {
+                    x:      comparisonMetric ? sample[comparisonMetric] : index,
+                    y:      sample[value],
+                    size:   index + 2
+                };
+            }),
+            graphSeries = [
+                {
+                    values: axisValues,
+                    key:    value,
+                    color:  "goldenrod"
+                }
+            ];
 
-        if (!!comparisonMetric) {
-            xScale =
-                d3.scale.pow()
-                    .domain([0, secondaryMetricMax])
-                    .range([0, width]);
-        } else {
-            xScale =
-                d3.scale.linear()
-                    .domain([0, graphData.length])
-                    .range([0, width]);
-        }
+        chart
+            .xDomain([0, comparisonMetric ? secondaryMetricMax : data.length])
+            .yDomain([0, dataMax]);
 
-        [].slice.call(graphSVG.querySelectorAll("rect")).forEach(function(rect) {
-            graphSVG.removeChild(rect);
-        });
+        chart.xAxis.axisLabel(comparisonMetric || "Iteration");
 
-        var graphNodes =
-                d3.select(graphSVG)
-                    .selectAll("rect")
-                    .data(graphData),
-            rects =
-                graphNodes
-                    .enter()
-                    .append("rect");
-
-        if (!!comparisonMetric) {
-            rects
-                .attr("stroke", "white")
-                .attr("width",  4)
-                .attr("height", 4)
-                .attr("x",      function(d, i) { return xScale(secondryMetricData[i]) - 2; })
-                .attr("y",      function(d, i) { return height - (yScale(d) - 2);          })
-                .attr("fill",   "green");
-        } else {
-            rects
-                .attr("width", function(d, i) {
-                    var barWidth = (width / graphData.length) | 0;
-                    return (barWidth > 1 ? barWidth - 1 : barWidth) || 1;
-                })
-                .attr("height", function(d)    { return yScale(d);           })
-                .attr("x",      function(d, i) { return xScale(i);           })
-                .attr("y",      function(d, i) { return height - yScale(d);  })
-                .attr("fill",   "green");
-        }
-
-        graphNodes.exit().remove();
+        d3.select(graphSVG)
+            .attr("width", width)
+            .attr("height", height)
+            .datum(graphSeries)
+            .call(chart);
 
         return self;
     }
