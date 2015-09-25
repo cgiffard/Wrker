@@ -40,7 +40,7 @@ Wrker uses node. You'll need to install `wrk` and `node` before installing wrk:
 	  -r --reporter <value>     The reporter to use (defaults to console.) Use one of: 
 								  * csv
 								  * console
-								  * browser (experimental)
+								  * browser
 
 ## Notes
 
@@ -48,10 +48,7 @@ There are some rough edges:
 
 * I got lazy and haven't yet written tests
 * Parsing of wrk data which uses SI prefixes is not yet implemented
-* The browser reporter is currently pretty basic. It doesn't currently display
-  a bunch of stuff you'd definitely want from graphs: scales/axes,
-  item labels and counts, comparison scatterplots, overlay latency stats on the
-  same graph, and much more. **I'm getting to this.**
+* The browser reporter is currently pretty basic.
 
 ## Licence
 
